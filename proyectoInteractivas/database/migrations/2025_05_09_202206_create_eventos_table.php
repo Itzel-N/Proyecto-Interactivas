@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('descripcion');
             $table->date('fecha_evento'); 
             $table->time('hora_evento'); 
-            $table->integer('asistentes');
+            $table->integer('asistentes')->default(0);
+            $table->string('estado');
             $table->bigInteger('lugar_id')->unsigned();
             $table->foreign('lugar_id')->references("id")->on('lugars');
             $table->timestamps();
