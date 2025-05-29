@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('estado')->default('solicitado');
             $table->bigInteger('evento_id')->unsigned();
             $table->bigInteger('usuario_id')->unsigned();
-            $table->foreign('evento_id')->references("id")->on('eventos');
-            $table->foreign('usuario_id')->references("id")->on('users');
+            $table->foreign('evento_id')->references("id")->on('eventos')->onDelete('cascade');
+            $table->foreign('usuario_id')->references("id")->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

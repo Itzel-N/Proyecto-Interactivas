@@ -42,7 +42,7 @@
                         
 
                         {{-- Eventos --}}
-                         <x-nav-link :href="route('eventos.index')" :active="request()->routeIs('eventos.index')">
+                         <x-nav-link :href="route('eventosp.index')" :active="request()->routeIs('eventos*')">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-2 " fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -53,17 +53,6 @@
                             </div>
                         </x-nav-link>
 
-                         {{-- Eventos Prueba --}}
-                         <x-nav-link :href="route('eventosp.index')" :active="request()->routeIs('eventosp.index')">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2 " fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                                Eventos Prueba
-                            </div>
-                        </x-nav-link>
                         
                     </div>
                 </nav>
@@ -119,8 +108,8 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('eventosp.index')" :active="request()->routeIs('eventosp.index')">
+                {{ __('Eventos') }}
             </x-responsive-nav-link>
         </div>
 

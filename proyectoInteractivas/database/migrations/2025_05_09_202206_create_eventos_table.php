@@ -19,8 +19,9 @@ return new class extends Migration
             $table->time('hora_evento'); 
             $table->integer('asistentes')->default(0);
             $table->string('estado');
+            $table->string('organizador');
             $table->bigInteger('lugar_id')->unsigned();
-            $table->foreign('lugar_id')->references("id")->on('lugars');
+            $table->foreign('lugar_id')->references("id")->on('lugars')->onDelete('cascade');
             $table->timestamps();
         });
     }
