@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Lugar;
 use App\Models\Evento;
 use App\Models\User;
@@ -120,7 +121,20 @@ class AdminController extends Controller
         abort(404);
     }
 
-    return view('administrador.evento_detalles', compact('evento'));
+    $usuariosNoInvitados = User::whereNotIn('id', function ($query) use ($id) {
+        $query->select('usuario_id')
+            ->from('solicitudes')
+            ->where('evento_id', $id);
+    })->get();
+
+    $usuariosInvitados = DB::table('solicitudes')
+    ->join('users', 'solicitudes.usuario_id', '=', 'users.id')
+    ->where('solicitudes.evento_id', $id)
+    ->select('users.id', 'users.name', 'users.email', 'solicitudes.estado')
+    ->get();
+
+
+    return view('administrador.evento_detalles', compact('evento', 'usuariosNoInvitados', 'usuariosInvitados'));
 }
 
 
@@ -191,6 +205,61 @@ public function actualizarUsuario(Request $request, $id)
     $usuario->save();
 
     return redirect()->back()->with('success', 'Rol actualizado correctamente.');
+}
+
+public function agregarInvitacion(Request $request)
+{
+    $request->validate([
+        'evento_id' => 'required|exists:eventos,id',
+        'usuario_id' => 'required|exists:users,id',
+    ]);
+
+    // Verifica si ya existe
+    $existe = DB::table('solicitudes')
+        ->where('evento_id', $request->evento_id)
+        ->where('usuario_id', $request->usuario_id)
+        ->exists();
+
+    if ($existe) {
+        return back()->with('error', 'El usuario ya fue invitado.');
+    }
+
+    DB::table('solicitudes')->insert([
+        'evento_id' => $request->evento_id,
+        'usuario_id' => $request->usuario_id,
+        'estado' => 'pendiente',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return back()->with('success', 'Usuario invitado exitosamente.');
+}
+
+public function eliminarSolicitud($usuario_id, $evento_id)
+{
+    DB::table('solicitudes')
+        ->where('usuario_id', $usuario_id)
+        ->where('evento_id', $evento_id)
+        ->delete();
+
+    return back()->with('success', 'Invitación eliminada correctamente.');
+}
+
+
+
+public function descargarInvitadosPDF($id)
+{
+    $invitados = DB::table('solicitudes')
+        ->join('users', 'solicitudes.usuario_id', '=', 'users.id')
+        ->where('solicitudes.evento_id', $id)
+        ->select('users.name', 'users.email', 'solicitudes.estado')
+        ->get();
+
+    $evento = DB::table('eventos')->where('id', $id)->first();
+
+    $pdf = Pdf::loadView('pdf.lista_invitados', compact('invitados', 'evento'));
+
+    return $pdf->download('lista_invitados_evento_' . $id . '.pdf');
 }
 
 

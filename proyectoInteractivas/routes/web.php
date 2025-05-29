@@ -33,6 +33,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/eventos',[AdminController::class, 'crudEventosp'])->name('eventosp.index');
     Route::get('/eventos/{id}', [AdminController::class, 'mostrarDetalles'])->name('eventos.mostrar');
     Route::get('/usuarios',[AdminController::class, 'crudUsuarios'])->name('usuarios.index');
+
+    Route::post('/invitaciones', [AdminController::class, 'agregarInvitacion'])->name('agregar.invitacion');
+    Route::get('/solicitudes/eliminar/{usuario_id}/{evento_id}', [AdminController::class, 'eliminarSolicitud'])->name('eliminar.solicitud');
+
+
+    Route::get('/eventos/{id}/invitados/pdf', [AdminController::class, 'descargarInvitadosPDF'])->name('evento.invitados.pdf');
+
     //Route::post('/enviar-reporte', [CorreoController::class, 'enviar'])->name('enviar.reporte');
 
     Route::post('/enviar-invitaciones', [AdminController::class, 'enviarInvitaciones'])->name('enviar.invitaciones');
